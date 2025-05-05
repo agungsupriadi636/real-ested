@@ -10,6 +10,7 @@ import {
 import Layout from "@layouts/Layout.astro";
 import BlogCard from "@components/BlogCard.astro";
 import Searchform from "@components/SearchForm.astro";
+import CallToAction from "@components/CallToAction.astro";
 
 const blogPosts = await getAllpost();
 const featurePost = await getFeaturedPosts();
@@ -37,7 +38,7 @@ const categories = await getAllCategoriesWithCount();
     <!-- Blog Content -->
     <section class="py-16 md:py-24">
         <div class="container mx-auto px-4">
-            <div class="flex flex-col lg:flex-row gap-8">
+            <div class="flex flex-col lg:flex-row gap-8 overflow-hidden">
                 <!-- Sidebar -->
                 <aside class="lg:w-1/4" data-sal="slide-right">
                     <!-- Search Widget -->
@@ -168,7 +169,7 @@ const categories = await getAllCategoriesWithCount();
                                                 href={`/blog/${post.id}`}
                                                 class="text-blue-600 hover:text-blue-800 font-medium transition"
                                             >
-                                                Baca Selengkapnya →
+                                                Baca →
                                             </a>
                                         </div>
                                     </div>
@@ -221,8 +222,11 @@ const categories = await getAllCategoriesWithCount();
         </div>
     </section>
 
+    <CallToAction />
+
     <!-- Newsletter Subscription -->
-    <section class="py-16 bg-blue-600 text-white">
+
+    <!-- <section class="py-16 bg-blue-600 text-white">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-2xl md:text-3xl font-bold mb-4" data-sal="slide-up">
                 Dapatkan Update Artikel Terbaru
@@ -235,26 +239,24 @@ const categories = await getAllCategoriesWithCount();
                 Berlangganan newsletter kami untuk mendapatkan artikel terbaru
                 seputar properti langsung ke email Anda
             </p>
-            <form class="max-w-md mx-auto p-2 bg-white rounded-md shadow-md">
+            <form class="" data-sal="slide-up" data-sal-delay="200">
                 <div
-                    class="flex gap-2 w-full"
-                    data-sal="slide-up"
-                    data-sal-delay="200"
+                    class="flex flex-col border max-w-md mx-auto p-2 bg-white rounded-md shadow-md"
                 >
                     <input
                         type="email"
                         placeholder="Alamat email Anda"
                         required
-                        class="flex-grow px-4 py-3 rounded-md focus:ring-2 focus:ring-white focus:border-white outline-none transition text-gray-900"
+                        class="flex-none border px-4 py-3 rounded-md focus:ring-2 focus:ring-white focus:border-white outline-none transition text-gray-900"
                     />
                     <button
                         type="submit"
-                        class="bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-md font-medium transition whitespace-nowrap"
+                        class="flex-1 bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-md font-medium transition"
                     >
                         Berlangganan
                     </button>
                 </div>
             </form>
         </div>
-    </section>
+    </section> -->
 </Layout>
