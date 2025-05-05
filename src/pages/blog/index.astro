@@ -1,0 +1,260 @@
+---
+import { Image } from "astro:assets";
+import {
+    getAllpost,
+    getFeaturedPosts,
+    getAllCategoriesWithCount,
+    pubDate,
+} from "@utils/blog.ts";
+
+import Layout from "@layouts/Layout.astro";
+import BlogCard from "@components/BlogCard.astro";
+import Searchform from "@components/SearchForm.astro";
+
+const blogPosts = await getAllpost();
+const featurePost = await getFeaturedPosts();
+const categories = await getAllCategoriesWithCount();
+---
+
+<Layout>
+    <!-- Hero Section -->
+    <section class="relative bg-blue-700 text-white py-20 md:py-28">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6" data-sal="slide-up">
+                Blog RealEstate
+            </h1>
+            <p
+                class="text-xl md:text-2xl max-w-3xl mx-auto"
+                data-sal="slide-up"
+                data-sal-delay="100"
+            >
+                Temukan artikel dan tips terbaru seputar properti dan real
+                estate
+            </p>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <section class="py-16 md:py-24">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar -->
+                <aside class="lg:w-1/4" data-sal="slide-right">
+                    <!-- Search Widget -->
+                    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                        <h3 class="text-lg font-bold mb-4">Cari Artikel</h3>
+
+                        <Searchform />
+
+                        <!-- <form class="relative">
+                            <input
+                                type="text"
+                                placeholder="Kata kunci..."
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition pr-10"
+                            />
+                            <button
+                                type="submit"
+                                class="absolute right-3 top-2 text-gray-400 hover:text-blue-600"
+                            >
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    ></path>
+                                </svg>
+                            </button>
+                        </form> -->
+                    </div>
+
+                    <!-- Categories Widget -->
+                    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                        <h3 class="text-lg font-bold mb-4">Kategori</h3>
+                        <ul class="space-y-2">
+                            {
+                                categories.map(({ category, count }) => (
+                                    <li>
+                                        <a
+                                            href={`/blog/category/${category.toLowerCase()}`}
+                                            class="flex justify-between items-center text-gray-700 hover:text-blue-600 transition"
+                                        >
+                                            <span>{category}</span>
+                                            <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                                                {count}
+                                            </span>
+                                        </a>
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </div>
+
+                    <!-- Popular Posts -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-lg font-bold mb-4">Populer</h3>
+                        <div class="space-y-4">
+                            {
+                                blogPosts.slice(0, 3).map((post) => (
+                                    <a
+                                        href={`/blog/${post.id}`}
+                                        class="group flex gap-3"
+                                    >
+                                        <Image
+                                            src={post.data.image.src}
+                                            alt={post.data.image.alt}
+                                            class="w-16 h-16 object-cover rounded-md"
+                                        />
+                                        <div>
+                                            <h4 class="line-clamp-2 font-medium text-gray-800 group-hover:text-blue-600 transition">
+                                                {post.data.title}
+                                            </h4>
+                                            <p class="text-sm text-gray-500">
+                                                {pubDate(post.data.publishDate)}
+                                            </p>
+                                        </div>
+                                    </a>
+                                ))
+                            }
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="lg:w-3/4">
+                    <!-- Featured Post -->
+                    {
+                        featurePost.map((post) => (
+                            <div class="mb-12" data-sal="slide-up">
+                                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                                    <Image
+                                        src={post.data.image.src}
+                                        alt={post.data.image.alt}
+                                        class="w-full h-64 md:h-80 object-cover"
+                                    />
+                                    <div class="p-6 md:p-8">
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full">
+                                                {post.data.category}
+                                            </span>
+                                            {/* <span class="text-sm text-gray-500"
+                                        >• {post.data.readingTime}</span
+                                    > */}
+                                        </div>
+                                        <h2 class="text-2xl md:text-3xl font-bold mb-3">
+                                            <a
+                                                href={`/blog/${post.id}`}
+                                                class="hover:text-blue-600 transition"
+                                            >
+                                                {post.data.title}
+                                            </a>
+                                        </h2>
+                                        <p class="text-gray-600 mb-4">
+                                            {post.data.excerpt}
+                                        </p>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 rounded-full bg-gray-200 mr-3" />
+                                                <span class="text-gray-700">
+                                                    {post.data.author}
+                                                </span>
+                                            </div>
+                                            <a
+                                                href={`/blog/${post.id}`}
+                                                class="text-blue-600 hover:text-blue-800 font-medium transition"
+                                            >
+                                                Baca Selengkapnya →
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+
+                    <!-- Blog Grid -->
+                    <div class="grid md:grid-cols-2 gap-8" data-sal="slide-up">
+                        {
+                            blogPosts
+                                .slice(1)
+                                .map((post) => <BlogCard post={post} />)
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-12 flex justify-center" data-sal="slide-up">
+                        <nav class="flex items-center gap-1">
+                            <a
+                                href="#"
+                                class="w-10 h-10 flex items-center justify-center rounded-md bg-blue-600 text-white"
+                            >
+                                1
+                            </a>
+                            <a
+                                href="#"
+                                class="w-10 h-10 flex items-center justify-center rounded-md hover:bg-gray-100 transition"
+                            >
+                                2
+                            </a>
+                            <a
+                                href="#"
+                                class="w-10 h-10 flex items-center justify-center rounded-md hover:bg-gray-100 transition"
+                            >
+                                3
+                            </a>
+                            <span class="px-2">...</span>
+                            <a
+                                href="#"
+                                class="w-10 h-10 flex items-center justify-center rounded-md hover:bg-gray-100 transition"
+                            >
+                                8
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Subscription -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4" data-sal="slide-up">
+                Dapatkan Update Artikel Terbaru
+            </h2>
+            <p
+                class="max-w-2xl mx-auto mb-8"
+                data-sal="slide-up"
+                data-sal-delay="100"
+            >
+                Berlangganan newsletter kami untuk mendapatkan artikel terbaru
+                seputar properti langsung ke email Anda
+            </p>
+            <form class="max-w-md mx-auto p-2 bg-white rounded-md shadow-md">
+                <div
+                    class="flex gap-2 w-full"
+                    data-sal="slide-up"
+                    data-sal-delay="200"
+                >
+                    <input
+                        type="email"
+                        placeholder="Alamat email Anda"
+                        required
+                        class="flex-grow px-4 py-3 rounded-md focus:ring-2 focus:ring-white focus:border-white outline-none transition text-gray-900"
+                    />
+                    <button
+                        type="submit"
+                        class="bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-md font-medium transition whitespace-nowrap"
+                    >
+                        Berlangganan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+</Layout>

@@ -1,0 +1,84 @@
+---
+import { getImage } from "astro:assets";
+import "@splidejs/splide/css";
+
+import hero1 from "@assets/images/hero1.webp";
+import hero2 from "@assets/images/hero2.webp";
+
+const optimizedHero1 = await getImage({ src: hero1, format: "avif" });
+const optimizedHero2 = await getImage({ src: hero2, format: "avif" });
+
+const heroes = [
+	{
+		images: optimizedHero1,
+		title: "Temukan Rumah Impian Anda",
+		description:
+			"Kami menyediakan properti terbaik dengan lokasi strategis dan harga kompetitif",
+		link: "/properties",
+		textLink: "Lihat Properti",
+	},
+	{
+		images: optimizedHero2,
+		title: "Investasi Properti Menguntungkan",
+		description: "Dapatkan return terbaik untuk investasi properti Anda",
+		link: "/contact",
+		textLink: "Konsultasi Sekarang",
+	},
+];
+---
+
+<!-- Hero Section dengan SplideJS -->
+<section class="relative">
+	<div class="splide hero-slider">
+		<div class="splide__track">
+			<ul class="splide__list">
+				{
+					heroes.map((hero) => (
+						<li class="splide__slide relative">
+							<div
+								class="h-screen bg-cover bg-center"
+								style={`background-image: url(${hero.images.src});`}
+							>
+								<div class="absolute z-10 inset-0 bg-black opacity-80 flex items-center">
+									<div
+										class="container mx-auto px-6 text-white"
+										data-sal="slide-up"
+										data-sal-duration="800"
+									>
+										<h1 class="text-4xl md:text-6xl font-bold mb-4">
+											{hero.title}
+										</h1>
+										<p class="text-xl md:text-2xl mb-8 max-w-2xl">
+											{hero.description}
+										</p>
+										<a
+											href={hero.link}
+											class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-md text-lg font-medium transition inline-block"
+										>
+											{hero.textLink}
+										</a>
+									</div>
+								</div>
+							</div>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</section>
+<script>
+	import Splide from "@splidejs/splide";
+
+	document.addEventListener("DOMContentLoaded", function () {
+		new Splide(".hero-slider", {
+			type: "fade",
+			rewind: true,
+			autoplay: true,
+			interval: 5000,
+			arrows: true,
+			pagination: false,
+			speed: 1000,
+		}).mount();
+	});
+</script>

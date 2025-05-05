@@ -1,0 +1,103 @@
+---
+import { Image } from "astro:assets";
+
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:1656901734.
+import client1 from "@assets/images/client1.webp";
+import client2 from "@assets/images/client2.webp";
+import client3 from "@assets/images/client3.webp";
+
+const testimonials = [
+  {
+    foto: client1,
+    nama: "Budi Santoso",
+    pekerjaan: "CEO Perusahaan A",
+    testimonial:
+      "Sangat puas dengan pelayanan dari RealEstate. Properti yang saya dapatkan sesuai dengan ekspektasi dan proses transaksi sangat lancar.",
+    rating: 5,
+  },
+  {
+    foto: client2,
+    nama: "Anisa Rahim",
+    pekerjaan: "karyawan swasta",
+    testimonial: "rumahnya sangat bagus",
+    rating: 4,
+  },
+  {
+    foto: client3,
+    nama: "Andra Wijaya",
+    pekerjaan: "karyawan swasta",
+    testimonial: "rumahnya sangat bagus",
+    rating: 4,
+  },
+];
+---
+
+<!-- Testimonials -->
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12" data-sal="slide-up">
+      <h2 class="text-3xl font-bold mb-4">Apa Kata Klien Kami?</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Testimoni dari klien yang puas dengan pelayanan kami
+      </p>
+    </div>
+
+    <div class="splide testimonials" data-sal="slide-up">
+      <div class="splide__track">
+        <ul class="splide__list">
+            {testimonials.map((t) => 
+                <li class="splide__slide px-3">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                    <Image src={t.foto} alt={t.nama} />
+                </div>
+                <div>
+                  <h4 class="font-bold">{t.nama}</h4>
+                  <p class="text-gray-600 text-sm">{t.pekerjaan}</p>
+                </div>
+              </div>
+              <p class="text-gray-700">
+                {t.testimonial}
+              </p>
+              <div class="flex mt-4">
+                <!-- Star ratings -->
+                {
+                  [1, 2, 3, 4, 5].map((i) => (
+                    <svg
+                      class="w-5 h-5 text-yellow-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))
+                }
+              </div>
+            </div>
+          </li>
+            )}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import Splide from "@splidejs/splide";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Inisialisasi SplideJS untuk testimonials
+    new Splide(".testimonials", {
+      perPage: 2,
+      perMove: 1,
+      gap: "2rem",
+      pagination: false,
+      breakpoints: {
+        768: {
+          perPage: 1,
+        },
+      },
+    }).mount();
+  });
+</script>

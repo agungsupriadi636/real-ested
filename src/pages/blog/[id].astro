@@ -1,0 +1,131 @@
+---
+// src/pages/blog/[slug].astro
+import Layout from "@layouts/Layout.astro";
+import BlogCard from '@components/BlogCard.astro';
+import { render } from 'astro:content';
+import {Image} from "astro:assets";
+import { pubDate, getRelatedPostsByCategory, getAllpost } from '@utils/blog.ts';
+
+// 1. Generate static paths
+export async function getStaticPaths() {
+  const posts = await getAllpost();
+  return posts.map(post => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+// 2. Type definitions
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+// 3. Get current post and related posts
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const relatedPosts = await getRelatedPostsByCategory( post.id, post.data.category );
+---
+
+<Layout>
+    <div class="container mx-auto px-4 py-12">
+         <!-- Article Header -->
+    <header class="mb-12 text-center">
+        <div class="mb-4">
+          <span class="bg-blue-100 text-blue-600 text-sm px-3 py-1 rounded-full">
+            {post.data.category}
+          </span>
+          <span class="mx-2 text-gray-400">•</span>
+          <span class="text-gray-500 text-sm">{post.data.readingTime}</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">
+          {post.data.title}
+        </h1>
+        <div class="flex items-center justify-center gap-4 text-gray-500">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-gray-200 mr-2"></div>
+            <span>{post.data.author}</span>
+          </div>
+          <span>•</span>
+          <time datetime={post.data.publishDate.toISOString()}>
+            {pubDate(post.data.publishDate)}
+          </time>
+        </div>
+    </header>
+
+      <!-- Featured Image -->
+    <figure class="mb-12 max-w-5xl mx-auto">
+        <Image
+          src={post.data.image.src} 
+          alt={post.data.image.alt}
+          class="w-full aspect-video object-cover rounded-xl shadow-lg"
+        />
+        <figcaption class="text-center text-sm text-gray-500 mt-4">
+          {post.data.image.alt}
+        </figcaption>
+      </figure>
+  
+      <!-- Article Content -->
+    <article class="prose prose-lg max-w-3xl mx-auto mb-16">
+        <Content/>
+    </article>
+  
+       <!-- Tags -->
+    {post.data.tags && post.data.tags.length > 0 && (
+        <div class="max-w-3xl mx-auto mb-16">
+          <h3 class="text-lg font-semibold mb-3">Tags:</h3>
+          <div class="flex flex-wrap gap-2">
+            {post.data.tags.map(tag => (
+              <a 
+                href={`/blog/tag/${tag.toLowerCase()}`}
+                class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm transition"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Author Bio -->
+    <section class="max-w-4xl mx-auto bg-gray-50 p-6 rounded-xl mb-16">
+        <div class="flex md:items-center flex-col md:flex-row gap-4">
+          <div class="w-16 h-16 rounded-full bg-gray-300 flex-shrink-0"></div>
+          <div>
+            <h3 class="text-lg font-bold">{post.data.author}</h3>
+            <p class="text-gray-600 mt-1">
+              Agen properti berpengalaman dengan spesialisasi di pasar {post.data.category}. 
+              Telah membantu lebih dari 100 klien menemukan properti impian mereka.
+            </p>
+            <div class="mt-3 flex gap-3">
+              <a href="#" class="text-gray-500 hover:text-blue-600">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                </svg>
+              </a>
+              <!-- Social media lainnya -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Posts -->
+    
+        <section class="mb-16">
+          <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold mb-8">Artikel Terkait</h2>
+            {relatedPosts.length > 0 ? (
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedPosts.map(post => (
+                <BlogCard post={post} />
+              ))}
+            </div>
+             ) : 
+             <p>Related Posts Not Exits</p>
+             }
+          </div>
+        </section>
+
+
+    </div>
+</Layout>

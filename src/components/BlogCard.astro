@@ -1,0 +1,37 @@
+---
+// src/components/BlogCard.astro
+import { Image } from "astro:assets";
+import { pubDate } from "@utils/blog.ts";
+const { post } = Astro.props;
+---
+
+<article
+    class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition h-full flex flex-col"
+>
+    <Image src={post.data.image.src} alt={post.data.image.alt} class="w-full h-48 object-cover" />
+    <div class="p-6 flex-grow">
+        <div class="flex items-center gap-2 mb-3">
+            <span
+                class="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full"
+            >
+                {post.data.category}
+            </span>
+            <span class="text-sm text-gray-500">• {post.data.readingTime}</span>
+        </div>
+        <h3 class="text-xl font-bold mb-2 line-clamp-2">
+            <a href={`/blog/${post.id}`} class="hover:text-blue-600 transition">{post.data.title}</a>
+        </h3>
+        <p class="text-gray-600 mb-4 line-clamp-2">{post.data.excerpt}</p>
+        <div class="mt-auto">
+            <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500">{pubDate(post.data.publishDate)}</span>
+                <a
+                    href={`/blog/${post.id}`}
+                    class="text-blue-600 hover:text-blue-800 text-sm font-medium transition"
+                >
+                    Baca →
+                </a>
+            </div>
+        </div>
+    </div>
+</article>
